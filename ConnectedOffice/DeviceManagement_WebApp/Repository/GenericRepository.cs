@@ -8,8 +8,8 @@ namespace DeviceManagement_WebApp.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        protected readonly ApplicationDbContext  _context;
-        public GenericRepository(ApplicationDbContext context)
+        protected readonly ConnectedOfficeContext _context;
+        public GenericRepository(ConnectedOfficeContext context)
         {
             _context = context;
         }

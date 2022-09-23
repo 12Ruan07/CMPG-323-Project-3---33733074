@@ -5,7 +5,7 @@ namespace DeviceManagement_WebApp.Repository
 {
     public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
     {
-        public CategoryRepository(ApplicationDbContext context) : base(context)
+        public CategoryRepository(ConnectedOfficeContext context) : base(context)
         {
         }
 
