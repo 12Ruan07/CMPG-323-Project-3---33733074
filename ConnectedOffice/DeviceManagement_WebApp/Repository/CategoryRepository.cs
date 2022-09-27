@@ -1,5 +1,6 @@
 ﻿using DeviceManagement_WebApp.Data;
 using DeviceManagement_WebApp.Models;
+using System;
 
 namespace DeviceManagement_WebApp.Repository
 {
@@ -9,6 +10,7 @@ namespace DeviceManagement_WebApp.Repository
         {
         }
 
+    
         //Create additional methods here
     }
 }
