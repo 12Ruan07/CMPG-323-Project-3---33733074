@@ -15,11 +15,15 @@ namespace DeviceManagement_WebApp.Controllers
     public class DevicesController : Controller
     {
         private readonly IDeviceRepository _deviceRepository;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IZoneRepository _zoneRepository;
 
 
-        public DevicesController(IDeviceRepository deviceRepository)
+        public DevicesController(IDeviceRepository deviceRepository, ICategoryRepository categoryRepository, IZoneRepository zoneRepository)
         {
             _deviceRepository = deviceRepository;
+            _categoryRepository = categoryRepository;
+            _zoneRepository = zoneRepository;
         }
 
        
@@ -54,8 +58,8 @@ namespace DeviceManagement_WebApp.Controllers
         // Returns the view of devices
         public IActionResult Create()
         {
-           // ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "CategoryName");
-           // ViewData["ZoneId"] = new SelectList(_context.Zone, "ZoneId", "ZoneName");
+            ViewData["CategoryId"] = new SelectList(_categoryRepository.GetAll(), "CategoryId", "CategoryName");
+            ViewData["ZoneId"] = new SelectList(_zoneRepository.GetAll(), "ZoneId", "ZoneName");
             return View();
         }
 
@@ -86,8 +90,8 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
             
-            //ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "CategoryName", device.CategoryId);
-            //ViewData["ZoneId"] = new SelectList(_context.Zone, "ZoneId", "ZoneName", device.ZoneId);
+            ViewData["CategoryId"] = new SelectList(_categoryRepository.GetAll(), "CategoryId", "CategoryName", device.CategoryId);
+            ViewData["ZoneId"] = new SelectList(_zoneRepository.GetAll(), "ZoneId", "ZoneName", device.ZoneId);
             
             return View(device);
         }

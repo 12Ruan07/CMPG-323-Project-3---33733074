@@ -11,6 +11,7 @@ namespace DeviceManagement_WebApp.Repository
 
         }
 
+        
         //Add aditional methods here
     }
 }
