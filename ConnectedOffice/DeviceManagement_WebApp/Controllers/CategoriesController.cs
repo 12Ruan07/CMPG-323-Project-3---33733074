@@ -21,7 +21,8 @@ namespace DeviceManagement_WebApp.Controllers
 
        
 
-        // GET: Categories
+        // GET: Categories 
+        // Shows all of the categories from the database
         public async Task<IActionResult> Index()
         {
            return View(_categoryRepository.GetAll());
@@ -29,6 +30,7 @@ namespace DeviceManagement_WebApp.Controllers
 
 
         // GET: Categories/Details/5
+        // Shows details of a singular category with the specified id
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -46,7 +48,7 @@ namespace DeviceManagement_WebApp.Controllers
         }
 
         // GET: Categories/Create
-
+        // Returns the view of categories.
         public IActionResult Create()
         {
             return View();
@@ -54,9 +56,7 @@ namespace DeviceManagement_WebApp.Controllers
 
 
         // POST: Categories/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-
+        // Addds a new category to the database, user needs to enter category name and description
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,CategoryDescription,DateCreated")] Category category)
@@ -72,6 +72,7 @@ namespace DeviceManagement_WebApp.Controllers
         }
 
         // GET: Categories/Edit/5
+        // Returns the view of categories 
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -89,8 +90,7 @@ namespace DeviceManagement_WebApp.Controllers
         
 
         // POST: Categories/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Updates an existing catgeory,user is able to change category name and/or description
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("CategoryId,CategoryName,CategoryDescription,DateCreated")] Category category)
@@ -121,6 +121,7 @@ namespace DeviceManagement_WebApp.Controllers
 
 
         // GET: Categories/Delete/5
+        // Returns the view of categories
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -139,6 +140,7 @@ namespace DeviceManagement_WebApp.Controllers
         }
 
         // POST: Categories/Delete/5
+        // Category of the specified id will be deleted
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
@@ -150,7 +152,8 @@ namespace DeviceManagement_WebApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //Category Exist
+        // Category Exist
+        // Checks if a category with specified id exists
         private bool CategoryExists(Guid id)
         {
             return _categoryRepository.GetById(id) != null;
