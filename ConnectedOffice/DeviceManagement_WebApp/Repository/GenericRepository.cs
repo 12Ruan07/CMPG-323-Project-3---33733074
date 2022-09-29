@@ -3,13 +3,14 @@ using System.Linq.Expressions;
 using System;
 using DeviceManagement_WebApp.Data;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeviceManagement_WebApp.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        protected readonly ApplicationDbContext  _context;
-        public GenericRepository(ApplicationDbContext context)
+        protected readonly ConnectedOfficeContext _context;
+        public GenericRepository(ConnectedOfficeContext context)
         {
             _context = context;
         }
@@ -29,7 +30,7 @@ namespace DeviceManagement_WebApp.Repository
         {
             return _context.Set<T>().ToList();
         }
-        public T GetById(int id)
+        public T GetById(Guid? id)
         {
             return _context.Set<T>().Find(id);
         }
@@ -41,6 +42,18 @@ namespace DeviceManagement_WebApp.Repository
         {
             _context.Set<T>().RemoveRange(entities);
         }
+
+        public void Save()
+        {
+            _context.SaveChanges();
+        }
+
+        public void Update(T entity)
+        {
+            _context.Entry(entity).State = EntityState.Modified;
+        }
+
+       
     }
 }
 

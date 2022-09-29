@@ -7,25 +7,28 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DeviceManagement_WebApp.Data;
 using DeviceManagement_WebApp.Models;
+using DeviceManagement_WebApp.Repository;
 
 namespace DeviceManagement_WebApp.Controllers
 {
     public class ZonesController : Controller
     {
-        private readonly ConnectedOfficeContext _context;
+        private readonly IZoneRepository _zoneRepository;
 
-        public ZonesController(ConnectedOfficeContext context)
+        public ZonesController(IZoneRepository zoneRepository)
         {
-            _context = context;
+            _zoneRepository = zoneRepository;
         }
 
         // GET: Zones
-        public async Task<IActionResult> Index()
+        // Shows all of the zones from the database
+       public async Task<IActionResult> Index()
         {
-            return View(await _context.Zone.ToListAsync());
+            return View(_zoneRepository.GetAll());
         }
 
         // GET: Zones/Details/5
+        // Shows details of a singular zone with specified id
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -33,8 +36,8 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var zone = await _context.Zone
-                .FirstOrDefaultAsync(m => m.ZoneId == id);
+            var zone = _zoneRepository.GetById(id);
+               
             if (zone == null)
             {
                 return NotFound();
@@ -43,27 +46,29 @@ namespace DeviceManagement_WebApp.Controllers
             return View(zone);
         }
 
+
         // GET: Zones/Create
+        // Returns view of zones
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Zones/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Adds a new zone to the database, user has to enter zone name and description
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ZoneId,ZoneName,ZoneDescription,DateCreated")] Zone zone)
         {
             zone.ZoneId = Guid.NewGuid();
-            _context.Add(zone);
-            await _context.SaveChangesAsync();
+            _zoneRepository.Add(zone);
+            _zoneRepository.Save();
 
             return RedirectToAction(nameof(Index));
         }
 
         // GET: Zones/Edit/5
+        // Returns view of zones
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -71,7 +76,7 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var zone = await _context.Zone.FindAsync(id);
+            var zone = _zoneRepository.GetById(id);
             if (zone == null)
             {
                 return NotFound();
@@ -80,8 +85,7 @@ namespace DeviceManagement_WebApp.Controllers
         }
 
         // POST: Zones/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Updates an existing zone, user is able to change zone name and/or description
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("ZoneId,ZoneName,ZoneDescription,DateCreated")] Zone zone)
@@ -93,8 +97,8 @@ namespace DeviceManagement_WebApp.Controllers
 
             try
             {
-                _context.Update(zone);
-                await _context.SaveChangesAsync();
+                _zoneRepository.Update(zone);
+                _zoneRepository.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -112,6 +116,7 @@ namespace DeviceManagement_WebApp.Controllers
         }
 
         // GET: Zones/Delete/5
+        // Returns view of zones
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -119,8 +124,7 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var zone = await _context.Zone
-                .FirstOrDefaultAsync(m => m.ZoneId == id);
+            var zone = _zoneRepository.GetById(id);
             if (zone == null)
             {
                 return NotFound();
@@ -129,20 +133,26 @@ namespace DeviceManagement_WebApp.Controllers
             return View(zone);
         }
 
+
+
         // POST: Zones/Delete/5
+        // Deletes an existing zone from the database
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var zone = await _context.Zone.FindAsync(id);
-            _context.Zone.Remove(zone);
-            await _context.SaveChangesAsync();
+            var zone = _zoneRepository.GetById(id);
+            _zoneRepository.Remove(zone);
+            _zoneRepository.Save();
             return RedirectToAction(nameof(Index));
         }
 
+        // CheckExists
+        // Checks if the zone with specified id exists in the database
         private bool ZoneExists(Guid id)
         {
-            return _context.Zone.Any(e => e.ZoneId == id);
+            return _zoneRepository.GetById(id) != null;
         }
+
     }
 }
